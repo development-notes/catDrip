@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="system">
+	
+	<select id="testDb" resultType="string">
+		SELECT TO_CHAR(SYSDATE, 'YYYY.MM.DD HH24:MI:SS')AS SYSDATE_TIME FROM DUAL
+	</select>
+	
+	
+	<select id="test_select" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+			SELECT
+				*
+			FROM
+				(SELECT
+					ROWNUM RNUM,
+  					TB.*
+  				FROM
+  					(SELECT 
+						PK_NUM,
+						EMP_NO,
+						(SELECT USER_NAME FROM STX_COM_INSA_USER B WHERE B.EMP_NO = A.EMP_NO) AS USER_NAME,
+						CONTENT,
+						RECOMMENDED,
+						INSERT_DATE
+					FROM
+						JH_BOARD A	
+					ORDER BY 
+						PK_NUM DESC) TB
+			)
+			WHERE 
+				RNUM <= #{firstIndex} + #{recordCountPerPage}
+			AND 
+				RNUM > #{firstIndex}
+		]]>
+	</select>
+	<select id="test_sendCnt" resultType="java.lang.Integer">
+		<![CDATA[  
+			SELECT 
+				COUNT(*)
+			FROM
+				JH_BOARD	
+		]]>
+	</select>
+</mapper>
